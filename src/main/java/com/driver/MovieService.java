@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Service
@@ -26,14 +29,25 @@ public class MovieService {
     }
 
     public void addMovieDirectorPair(String nameOfMovie,String nameOfDirector){
-        if(nameOfMovie=="" || nameOfDirector=="") return;
-        else {
-            if (movieRepository.listOfMovies.contains(nameOfMovie) &&
-                    movieRepository.listOfDirectors.contains(nameOfDirector))
 
-                movieRepository.addMovieDirectorPair(nameOfMovie, nameOfDirector);
+              boolean movieIsThere=false,directorIsThere=false;
+        for(Movie movie : movieRepository.listOfMovies){
+            if(movie.getName().equals(nameOfMovie)){
+                movieIsThere=true;
+                break;
+            }
 
         }
+        if(movieIsThere){
+            for(Director director : movieRepository.listOfDirectors){
+                if(director.getName().equals(nameOfDirector)){
+                    directorIsThere=true;
+                    break;
+                }
+            }
+        }
+        if(movieIsThere && directorIsThere)
+         movieRepository.addMovieDirectorPair(nameOfMovie,nameOfDirector);
     }
 
     public Movie findMovie(String nameOfMovie){
@@ -64,21 +78,46 @@ public class MovieService {
             allMovies.add(movie);
     }
 
-    public void deleteDirectorandSongs(String nameOfDirector){
+    public void deleteDirectorandMovies(String nameOfDirector){
 //        movieRepository.listOfDirectors.remove(nameOfDirector);
+
+        //1.Take out director movies in list from map
+        //2.Delete the movies from movie list
+        //3.Delete the director from director list
+        List<String> movieList=new ArrayList<>();
+
+        for(String movie : movieRepository.addMovieDirector.keySet()){
+            if(movieRepository.addMovieDirector.get(movie).equals(nameOfDirector))
+                movieList.add(movie);
+        }
+        for(String movie : movieList){
+            if(movieRepository.listOfMovies.contains(movie)) {
+                movieRepository.listOfMovies.remove(movie);
+                movieRepository.addMovieDirector.remove(movie);
+            }
+        }
+
         for(Director director : movieRepository.listOfDirectors){
-            if(director.getName().equals(nameOfDirector))
+            if(director.getName().equals(nameOfDirector)) {
                 movieRepository.listOfDirectors.remove(director);
+                break;
+            }
         }
-        for(String nameOfMovie : movieRepository.addMovieDirector.keySet()){
-            if(movieRepository.addMovieDirector.get(nameOfMovie).equals(nameOfDirector))
-                movieRepository.addMovieDirector.remove(nameOfMovie);
-        }
+
 
     }
 
     public void deleteAllDirectors(){
-        movieRepository.listOfDirectors.clear();
-        movieRepository.addMovieDirector.clear();
+        //Traverse through map and get all movies in a list and remove that from movie list...
+        Set<String> moviesList=new HashSet<>();
+        for(String movie : movieRepository.addMovieDirector.keySet()){
+            moviesList.add(movie);
+        }
+        for(String movie : moviesList){
+            for(Movie m : movieRepository.listOfMovies){
+                if(m.getName().equals(movie))
+                    movieRepository.listOfMovies.remove(m);
+            }
+        }
     }
 }
