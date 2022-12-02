@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+
 
 @Component
 @Service
@@ -97,9 +96,11 @@ public class MovieService {
             }
         }
 
-        for(Director director : movieRepository.listOfDirectors){
-            if(director.getName().equals(nameOfDirector)) {
-                movieRepository.listOfDirectors.remove(director);
+        Iterator<Director> it=movieRepository.listOfDirectors.iterator();
+        while(it.hasNext()){
+            Director director=it.next();
+            if(director.getName().equals(nameOfDirector)){
+                it.remove();
                 break;
             }
         }
@@ -113,10 +114,13 @@ public class MovieService {
         for(String movie : movieRepository.addMovieDirector.keySet()){
             moviesList.add(movie);
         }
+        Iterator<Movie> it=movieRepository.listOfMovies.iterator();
+
         for(String movie : moviesList){
-            for(Movie m : movieRepository.listOfMovies){
+            while(it.hasNext()){
+                Movie m=it.next();
                 if(m.getName().equals(movie))
-                    movieRepository.listOfMovies.remove(m);
+                    it.remove();
             }
         }
     }
