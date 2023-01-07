@@ -14,6 +14,12 @@ public class MovieController {
     @Autowired
     MovieService movieService;
 
+    //Functionality of getDirectorByMovieName...
+    @GetMapping("/get-directorName-byMovieName/{movieName}")
+    public ResponseEntity<String> getDirectorByMovieName(@PathVariable String movieName){
+        String director=movieService.getDirectorByMovie(movieName);
+        return new ResponseEntity<>(director,HttpStatus.CREATED);
+    }
     @PostMapping("/add-movie")
     public ResponseEntity<String> addMovie(@RequestBody Movie movie){
         movieService.addMovie(movie);

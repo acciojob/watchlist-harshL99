@@ -13,6 +13,17 @@ public class MovieRepository {
     private HashMap<String, Director> directorMap;
     private HashMap<String, List<String>> directorMovieMapping;
 
+    //Functionality of getDirectorByMovieName...
+    public String getDirectorByMovie(String movieName){
+        if(movieMap.containsKey(movieName)){  //First Check if MovieMap is having movieName because directorMovieMapping is made from movieMap and directorMap...
+            for(String director : directorMovieMapping.keySet()){
+                for(String moviefromDirector : directorMovieMapping.get(director)){
+                    if(moviefromDirector.equals(movieName)) return director;
+                }
+            }
+        }
+        return null;
+    }
     public MovieRepository(){
         this.movieMap = new HashMap<String, Movie>();
         this.directorMap = new HashMap<String, Director>();
